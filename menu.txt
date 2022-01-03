@@ -1,0 +1,5 @@
+1. Add Studio
+2. Edit Studio
+3. View Studio
+4. Buy Ticket
+5. Exit
