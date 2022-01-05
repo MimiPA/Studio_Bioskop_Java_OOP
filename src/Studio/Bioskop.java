@@ -69,12 +69,28 @@ public class Bioskop {
             } else if (selectedMenu.equals("3")) {
                 xxi.viewStudio();
 
+                System.out.println("Apakah anda ingin melihat tempat diduduk pada studio yang tersedia ? (Y/N)");
+                String jawab = input.nextLine();
+
+                if (jawab.equalsIgnoreCase("Y")) {
+                    System.out.println("Harap masukkan nama studio yang ingin dilihat (Perhatikan huruf besar kecil !)");
+                    String namaStudio = input.nextLine();
+                    xxi.viewSeat(namaStudio);
+                }
+                else if(jawab.equalsIgnoreCase("N")){
+                    
+                }
+                else{
+                    System.out.println("Anda salah memilih jawaban");
+                }
+
             } else if (selectedMenu.equals("4")) {
                 xxi.viewStudio();
                 System.out.println("Masukkan nama studio yang diinginkan (Perhatikan huruf besar kecil !)");
                 String namaStudio = input.nextLine();
                 xxi.viewSeat(namaStudio);
 
+                System.out.println("Kursi dengan tanda @ telah dibeli ! Harap jangan mengambil kursi orang !!!");
                 System.out.println("Berapa banyak anda ingin membeli tiket ?");
                 int tiket = input.nextInt();
 
@@ -83,23 +99,18 @@ public class Bioskop {
 
                 for (int i = 1; i <= tiket; i++) {
                     System.out.println("Tiket " + i);
-                    System.out.print("Masukkan row ke- ");
+                    System.out.print("Masukkan row [A-J] ke- ");
                     String row = input.next();
-                    rowArray[i-1] = row;
+                    rowArray[i - 1] = row;
                     xxi.setRow(rowArray);
 
-                    System.out.print("Masukkan seat ke - ");
+                    System.out.print("Masukkan seat [1-20] ke - ");
                     String seat = input.next();
-                    seatArray[i-1] = seat;
+                    seatArray[i - 1] = seat;
                     xxi.setSeat(seatArray);
                 }
 
-                for (int i = 0; i < tiket; i++) {
-                    System.out.println(rowArray[i] + " ");
-                    System.out.println(seatArray[i] + " ");
-                }
-
-                //xxi.buyTicket();
+                xxi.buyTicket(namaStudio);
             } else if (selectedMenu.equals("5")) {
                 System.exit(0);
             } else {

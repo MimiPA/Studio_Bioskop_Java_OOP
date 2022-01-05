@@ -6,12 +6,15 @@
 package Studio;
 
 import Studio.Pengguna;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -21,6 +24,7 @@ import java.util.Scanner;
 public class Studio extends Pengguna implements StudioMenu {
 
     static ArrayList<String> studioList;
+    static String[][] kursi;
 
     public Studio(String nama) {
         super(nama);
@@ -29,6 +33,7 @@ public class Studio extends Pengguna implements StudioMenu {
     @Override
     public void addStudio(String studio, String film) {
         try {
+            System.out.println("------------------------------------------------");
             FileWriter fileWriter = new FileWriter("studio.txt", true);
             fileWriter.append(String.format("%s%n", "Studio " + studio + " : " + film));
             fileWriter.close();
@@ -41,14 +46,14 @@ public class Studio extends Pengguna implements StudioMenu {
                 for (int i = 0; i < 11; i++) {
                     for (int j = 0; j < 21; j++) {
                         if (i == 0 && j == 0) {
-                            myWriter.print("+ ");
+                            myWriter.print("+\t");
                         } else if (j == 0 && i != 0) {
-                            myWriter.print(a + " ");
+                            myWriter.print(a + "\t");
                             a++;
                         } else if (i == 0 && j != 0) {
-                            myWriter.print("\t" + j);
+                            myWriter.print(j + "\t");
                         } else {
-                            myWriter.print("\t*");
+                            myWriter.print("*\t");
                         }
                     }
                     myWriter.println("");
@@ -56,7 +61,6 @@ public class Studio extends Pengguna implements StudioMenu {
 
                 myWriter.close();
                 System.out.println("Studio created: " + myObj.getName());
-                System.exit(0);
             } else {
                 System.out.println("Studio already exists.");
                 System.exit(0);
@@ -93,7 +97,7 @@ public class Studio extends Pengguna implements StudioMenu {
                     }
                     fileWriter.close();
 
-                    System.out.println("Berhasil diubah!");
+                    System.out.println("Nama film berhasil diubah!");
                     System.exit(0);
                 } catch (IOException e) {
                     System.out.println("Terjadi kesalahan karena: " + e.getMessage());
@@ -108,6 +112,7 @@ public class Studio extends Pengguna implements StudioMenu {
     public void viewStudio() {
         try {
             System.out.println("-----------------------------------------------");
+            System.out.println("Daftar Studio yang tersedia adalah :");
             int i = 0;
             File myObj = new File("studio.txt");
             Scanner myReader = new Scanner(myObj);
@@ -117,6 +122,7 @@ public class Studio extends Pengguna implements StudioMenu {
                 i++;
             }
             myReader.close();
+            System.out.println("-----------------------------------------------");
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -124,10 +130,50 @@ public class Studio extends Pengguna implements StudioMenu {
     }
 
     @Override
-    public void buyTicket() {
+    public void buyTicket(String studio) {
         try {
-            String[] seat = getSeat();
-            String[] row = getRow();
+            kursi = new String[11][21];
+            String[] getSeat = getSeat();
+            String[] getRow = getRow();
+
+            File myObj = new File(studio + ".txt");
+            Scanner myReader = new Scanner(myObj);
+
+            while (myReader.hasNextLine()) {
+                for (int i = 0; i < kursi.length; i++) {
+                    String[] data = myReader.nextLine().trim().replaceAll("\t", " ").split(" ");
+                    for (int j = 0; j < kursi[i].length; j++) {
+                        kursi[i][j] = data[j];
+                    }
+                }
+            }
+            myReader.close();
+
+            for (int k = 0; k < getRow().length; k++) {
+                for (int i = 0; i < kursi.length; i++) {
+                    for (int j = 0; j < kursi[i].length; j++) {
+                        int seat = Integer.parseInt(getSeat()[k]);
+                        if (getRow()[k].equalsIgnoreCase(kursi[i][j])) {
+                            int row = i;
+                            kursi[row][seat] = "@";
+                        }
+                    }
+                }
+            }
+
+            PrintWriter fileWriter = new PrintWriter(studio + ".txt");
+            // write new data
+            for (String[] data : kursi) {
+                for (String val : data) {
+                    fileWriter.print(val + "\t");
+                }
+                fileWriter.println("");
+            }
+            fileWriter.close();
+
+            System.out.println("Anda berhasil memesan tempat duduk. Thank you.");
+            System.exit(0);
+
         } catch (Exception e) {
             System.out.println("Error > " + e.getMessage());
         }
@@ -144,10 +190,11 @@ public class Studio extends Pengguna implements StudioMenu {
                 System.out.println(data);
             }
             myReader.close();
+
             System.out.println("-----------------------------------------------");
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            System.out.println("Error > " + e.getMessage());
+            System.exit(0);
         }
     }
 
@@ -172,5 +219,4 @@ public class Studio extends Pengguna implements StudioMenu {
             System.out.println("Error > " + e.getMessage());
         }
     }
-
 }

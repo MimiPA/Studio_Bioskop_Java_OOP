@@ -19,7 +19,7 @@ public interface StudioMenu {
     
     public abstract void viewSeat(String studio);
 
-    public abstract void buyTicket();
+    public abstract void buyTicket(String studio);
 
     public abstract void exit();
 }
